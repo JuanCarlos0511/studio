@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -25,7 +26,7 @@ import {
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 const Logo = () => (
   <Link href="/" className="flex items-center gap-2">
@@ -141,12 +142,22 @@ export default function Header() {
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(false);
   const [loggedInUserType, setLoggedInUserType] = useState<'student' | 'company' | null>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     // Check localStorage only on the client side
     const userType = localStorage.getItem('userType') as 'student' | 'company' | null;
     setLoggedInUserType(userType);
-  }, []);
+    
+    // Close mobile sheet on navigation
+    if(isOpen) {
+        setIsOpen(false);
+    }
+  }, [pathname]);
+
+  if (isMobile === undefined) {
+    return <header className="sticky top-0 z-50 w-full border-b bg-card shadow-sm h-16" />;
+  }
 
   if (isMobile) {
     return (
