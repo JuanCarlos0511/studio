@@ -24,7 +24,8 @@ import {
 } from '../ui/dropdown-menu';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 const Logo = () => (
   <Link href="/" className="flex items-center gap-2">
@@ -46,19 +47,24 @@ const Logo = () => (
   </Link>
 );
 
-// Mock authentication state
-const LoggedInUserType: 'student' | 'company' | null = 'student';
-
-const NavLinks = ({ className }: { className?: string }) => {
-  const links = [
+const NavLinks = ({ className, userType }: { className?: string, userType: 'student' | 'company' | null }) => {
+  const baseLinks = [
     { href: '/', label: 'Empleos', icon: Briefcase },
-    ...(LoggedInUserType === 'company'
-      ? [{ href: '/dashboard', label: 'Panel', icon: LayoutDashboard }]
-      : []),
-    ...(LoggedInUserType === 'student'
-      ? [{ href: '/applications', label: 'Postulaciones', icon: FileText }]
-      : []),
-    { href: '/post-job', label: 'Publicar Vacante', icon: Users },
+  ];
+
+  const studentLinks = [
+    { href: '/applications', label: 'Mis Postulaciones', icon: FileText }
+  ];
+
+  const companyLinks = [
+      { href: '/dashboard', label: 'Panel Empresa', icon: LayoutDashboard },
+      { href: '/post-job', label: 'Publicar Vacante', icon: Users },
+  ];
+
+  const links = [
+    ...baseLinks,
+    ...(userType === 'student' ? studentLinks : []),
+    ...(userType === 'company' ? companyLinks : []),
   ];
 
   return (
@@ -77,34 +83,48 @@ const NavLinks = ({ className }: { className?: string }) => {
   );
 };
 
-const UserMenu = () => (
-  <DropdownMenu>
-    <DropdownMenuTrigger asChild>
-      <Button variant="ghost" className="flex items-center gap-2">
-        <Avatar className="h-8 w-8">
-          <AvatarImage src="https://picsum.photos/seed/stu1/100/100" alt="Ana Pérez" />
-          <AvatarFallback>AP</AvatarFallback>
-        </Avatar>
-        <span className="hidden md:inline">Ana Pérez</span>
-        <ChevronDown className="h-4 w-4" />
-      </Button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent align="end" className="w-56">
-      <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
-      <DropdownMenuSeparator />
-      <DropdownMenuItem asChild>
-        <Link href="/profile">
-          <UserCircle className="mr-2 h-4 w-4" />
-          <span>Perfil</span>
-        </Link>
-      </DropdownMenuItem>
-      <DropdownMenuItem>
-        <LogOut className="mr-2 h-4 w-4" />
-        <span>Cerrar Sesión</span>
-      </DropdownMenuItem>
-    </DropdownMenuContent>
-  </DropdownMenu>
-);
+const UserMenu = ({ userType }: { userType: 'student' | 'company' }) => {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem('userType');
+    router.push('/login');
+  };
+
+  const userName = userType === 'student' ? 'Ana Pérez' : 'Reclutador';
+  const userAvatar = userType === 'student' ? 'https://picsum.photos/seed/stu1/100/100' : 'https://picsum.photos/seed/comp1/100/100';
+  const userFallback = userType === 'student' ? 'AP' : 'R';
+  const profileLink = userType === 'student' ? '/profile' : '/dashboard';
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="flex items-center gap-2">
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={userAvatar} alt={userName} />
+            <AvatarFallback>{userFallback}</AvatarFallback>
+          </Avatar>
+          <span className="hidden md:inline">{userName}</span>
+          <ChevronDown className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href={profileLink}>
+            <UserCircle className="mr-2 h-4 w-4" />
+            <span>{userType === 'student' ? 'Perfil' : 'Panel'}</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleLogout}>
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>Cerrar Sesión</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 
 const AuthButtons = () => (
   <div className="flex items-center gap-2">
@@ -120,6 +140,13 @@ const AuthButtons = () => (
 export default function Header() {
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(false);
+  const [loggedInUserType, setLoggedInUserType] = useState<'student' | 'company' | null>(null);
+
+  useEffect(() => {
+    // Check localStorage only on the client side
+    const userType = localStorage.getItem('userType') as 'student' | 'company' | null;
+    setLoggedInUserType(userType);
+  }, []);
 
   if (isMobile) {
     return (
@@ -135,9 +162,9 @@ export default function Header() {
             <SheetContent side="right">
               <div className="flex flex-col gap-6 p-4">
                 <Logo />
-                <NavLinks className="flex-col !items-start" />
+                <NavLinks className="flex-col !items-start" userType={loggedInUserType} />
                 <div className="border-t pt-4">
-                  {LoggedInUserType ? <UserMenu /> : <AuthButtons />}
+                  {loggedInUserType ? <UserMenu userType={loggedInUserType} /> : <AuthButtons />}
                 </div>
               </div>
             </SheetContent>
@@ -152,9 +179,9 @@ export default function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-8">
           <Logo />
-          <NavLinks />
+          <NavLinks userType={loggedInUserType} />
         </div>
-        <div>{LoggedInUserType ? <UserMenu /> : <AuthButtons />}</div>
+        <div>{loggedInUserType ? <UserMenu userType={loggedInUserType} /> : <AuthButtons />}</div>
       </div>
     </header>
   );
