@@ -16,30 +16,43 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { UserPlus, Building } from 'lucide-react';
+import type { Student } from '@/lib/types';
 
 const StudentForm = () => {
   const router = useRouter();
   const { toast } = useToast();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    // Create a temporary student profile in localStorage
+    const newStudent: Partial<Student> = {
+      id: `new-stu-${Date.now()}`,
+      name: name || 'Nuevo Estudiante',
+      email: email || 'tu@email.com',
+      avatar: `https://picsum.photos/seed/${Date.now()}/100/100`,
+    };
+    localStorage.setItem('tempStudentProfile', JSON.stringify(newStudent));
     localStorage.setItem('userType', 'student');
+
     toast({
-      title: '¡Registro Exitoso!',
-      description: 'Tu cuenta de estudiante ha sido creada. ¡Bienvenida!',
+      title: '¡Casi listo!',
+      description: 'Ahora configura tu perfil para empezar.',
     });
-    router.push('/profile');
+    router.push('/register/setup');
   };
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
       <div className="space-y-2">
         <Label htmlFor="student-name">Nombre Completo</Label>
-        <Input id="student-name" placeholder="Tu nombre" required />
+        <Input id="student-name" placeholder="Tu nombre" required value={name} onChange={(e) => setName(e.target.value)} />
       </div>
       <div className="space-y-2">
         <Label htmlFor="student-email">Correo Electrónico</Label>
-        <Input id="student-email" type="email" placeholder="tu@email.com" required />
+        <Input id="student-email" type="email" placeholder="tu@email.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
       </div>
       <div className="space-y-2">
         <Label htmlFor="student-password">Contraseña</Label>

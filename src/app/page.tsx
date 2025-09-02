@@ -12,13 +12,23 @@ import SuggestionsCard from '@/components/layout/SuggestionsCard';
 export default function Home() {
   const [filteredJobs, setFilteredJobs] = useState<Job[]>(jobs);
   const [userType, setUserType] = useState<'student' | 'company' | null>(null);
-  
-  // Mocking the student for the profile card
-  const student: Student = students[0];
+  const [student, setStudent] = useState<Student>(students[0]);
 
   useEffect(() => {
     const storedUserType = localStorage.getItem('userType') as 'student' | 'company' | null;
     setUserType(storedUserType);
+    
+    if (storedUserType === 'student') {
+      const tempProfile = localStorage.getItem('tempStudentProfile');
+      if (tempProfile) {
+        // If there's a profile being created, merge it with a default student structure
+        const tempStudent = JSON.parse(tempProfile);
+        setStudent(prevStudent => ({...prevStudent, ...tempStudent}));
+      } else {
+        // Fallback to the hardcoded student if no temporary one is found
+        setStudent(students[0]);
+      }
+    }
   }, []);
 
   return (
@@ -26,9 +36,12 @@ export default function Home() {
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
           
-          <aside className="hidden lg:block lg:col-span-1">
+          <aside className="hidden lg:block lg:col-span-1 space-y-8">
              {userType === 'student' ? (
-                <ProfileCard student={student} />
+                <>
+                  <ProfileCard student={student} />
+                  <JobFilters allJobs={jobs} onFilterChange={setFilteredJobs} />
+                </>
              ) : (
                 <JobFilters allJobs={jobs} onFilterChange={setFilteredJobs} />
              )}

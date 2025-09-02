@@ -5,13 +5,29 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import type { Student } from '@/lib/types';
-import { Bookmark, Tv } from 'lucide-react';
+import { Bookmark } from 'lucide-react';
+import { Skeleton } from '../ui/skeleton';
 
 interface ProfileCardProps {
   student: Student;
 }
 
 export default function ProfileCard({ student }: ProfileCardProps) {
+  if (!student) {
+    return (
+      <Card className="sticky top-20 shadow-sm p-4">
+        <Skeleton className="h-20 w-full rounded-t-lg" />
+        <div className="p-4 pb-6 text-center">
+            <div className="relative w-24 h-24 mx-auto -mt-16 mb-2">
+                <Skeleton className="w-24 h-24 rounded-full" />
+            </div>
+            <Skeleton className="h-6 w-3/4 mx-auto mb-2" />
+            <Skeleton className="h-4 w-full mx-auto" />
+             <Skeleton className="h-4 w-1/2 mx-auto mt-1" />
+        </div>
+      </Card>
+    );
+  }
   return (
     <Card className="sticky top-20 shadow-sm">
       <CardContent className="p-0 text-center">
@@ -19,7 +35,7 @@ export default function ProfileCard({ student }: ProfileCardProps) {
             <Image 
                 src="https://picsum.photos/seed/bg/400/100" 
                 alt="Profile background"
-                layout="fill"
+                fill
                 objectFit="cover"
                 className="rounded-t-lg"
                 data-ai-hint="profile background"
@@ -39,7 +55,7 @@ export default function ProfileCard({ student }: ProfileCardProps) {
             <Link href="/profile">
                 <h3 className="text-lg font-headline font-semibold hover:underline">{student.name}</h3>
             </Link>
-            <p className="text-sm text-muted-foreground px-4">{student.summary}</p>
+            <p className="text-sm text-muted-foreground px-4 line-clamp-3">{student.summary}</p>
         </div>
         <div className="border-t p-4 space-y-3 text-left">
             <Link href="/applications" className="group">

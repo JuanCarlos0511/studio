@@ -1,31 +1,71 @@
-import { students } from "@/lib/data";
-import { notFound } from "next/navigation";
-import Image from "next/image";
+'use client';
+
+import { students } from '@/lib/data';
+import { notFound } from 'next/navigation';
+import Image from 'next/image';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   User,
-  Mail,
   Briefcase,
   GraduationCap,
   Download,
   ExternalLink,
   Pencil,
-} from "lucide-react";
-import CvEnhancer from "@/components/ai/CvEnhancer";
+} from 'lucide-react';
+import CvEnhancer from '@/components/ai/CvEnhancer';
+import { useEffect, useState } from 'react';
+import type { Student } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ProfilePage() {
-  const student = students[0]; // Mocking logged in student
+  const [student, setStudent] = useState<Student | null>(null);
+
+  useEffect(() => {
+    const tempProfile = localStorage.getItem('tempStudentProfile');
+    if (tempProfile) {
+      const tempStudentData = JSON.parse(tempProfile);
+      // Merge with default data to ensure all fields are present
+      setStudent({
+          ...students[0],
+          ...tempStudentData,
+          workExperience: tempStudentData.workExperience || students[0].workExperience,
+          education: tempStudentData.education || students[0].education,
+      });
+    } else {
+      // Fallback to the hardcoded student if no temporary one is found
+      setStudent(students[0]);
+    }
+  }, []);
 
   if (!student) {
-    notFound();
+    return (
+        <div className="container mx-auto px-4 py-12">
+            <div className="grid lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-1 space-y-8">
+                    <Card className="shadow-md text-center p-6">
+                        <Skeleton className="w-32 h-32 rounded-full mx-auto mb-4" />
+                        <Skeleton className="h-8 w-48 mx-auto mb-2" />
+                        <Skeleton className="h-4 w-64 mx-auto" />
+                    </Card>
+                </div>
+                <div className="lg:col-span-2 space-y-8">
+                    <Card className="shadow-md p-6">
+                        <Skeleton className="h-8 w-48 mb-4" />
+                        <Skeleton className="h-4 w-full mb-2" />
+                        <Skeleton className="h-4 w-3/4" />
+                    </Card>
+                </div>
+            </div>
+        </div>
+    );
   }
 
   return (
