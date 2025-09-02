@@ -1,3 +1,7 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,43 +14,72 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/hooks/use-toast';
 import { UserPlus, Building } from 'lucide-react';
 
-const StudentForm = () => (
-  <form className="space-y-4">
-    <div className="space-y-2">
-      <Label htmlFor="student-name">Nombre Completo</Label>
-      <Input id="student-name" placeholder="Tu nombre" required />
-    </div>
-    <div className="space-y-2">
-      <Label htmlFor="student-email">Correo Electrónico</Label>
-      <Input id="student-email" type="email" placeholder="tu@email.com" required />
-    </div>
-    <div className="space-y-2">
-      <Label htmlFor="student-password">Contraseña</Label>
-      <Input id="student-password" type="password" required />
-    </div>
-    <Button type="submit" className="w-full !mt-6">Crear Cuenta de Estudiante</Button>
-  </form>
-);
+const StudentForm = () => {
+  const router = useRouter();
+  const { toast } = useToast();
 
-const CompanyForm = () => (
-    <form className="space-y-4">
-    <div className="space-y-2">
-      <Label htmlFor="company-name">Nombre de la Empresa</Label>
-      <Input id="company-name" placeholder="Tu empresa" required />
-    </div>
-    <div className="space-y-2">
-      <Label htmlFor="company-email">Correo Electrónico Corporativo</Label>
-      <Input id="company-email" type="email" placeholder="scouter@empresa.com" required />
-    </div>
-    <div className="space-y-2">
-      <Label htmlFor="company-password">Contraseña</Label>
-      <Input id="company-password" type="password" required />
-    </div>
-    <Button type="submit" className="w-full !mt-6">Crear Cuenta de Empresa</Button>
-  </form>
-);
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    toast({
+      title: '¡Registro Exitoso!',
+      description: 'Tu cuenta de estudiante ha sido creada. Ahora puedes iniciar sesión.',
+    });
+    router.push('/login');
+  };
+
+  return (
+    <form className="space-y-4" onSubmit={handleSubmit}>
+      <div className="space-y-2">
+        <Label htmlFor="student-name">Nombre Completo</Label>
+        <Input id="student-name" placeholder="Tu nombre" required />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="student-email">Correo Electrónico</Label>
+        <Input id="student-email" type="email" placeholder="tu@email.com" required />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="student-password">Contraseña</Label>
+        <Input id="student-password" type="password" required />
+      </div>
+      <Button type="submit" className="w-full !mt-6">Crear Cuenta de Estudiante</Button>
+    </form>
+  );
+};
+
+const CompanyForm = () => {
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    toast({
+      title: '¡Registro Exitoso!',
+      description: 'La cuenta de tu empresa ha sido creada. Ahora puedes iniciar sesión.',
+    });
+    router.push('/login');
+  };
+
+  return (
+    <form className="space-y-4" onSubmit={handleSubmit}>
+      <div className="space-y-2">
+        <Label htmlFor="company-name">Nombre de la Empresa</Label>
+        <Input id="company-name" placeholder="Tu empresa" required />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="company-email">Correo Electrónico Corporativo</Label>
+        <Input id="company-email" type="email" placeholder="scouter@empresa.com" required />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="company-password">Contraseña</Label>
+        <Input id="company-password" type="password" required />
+      </div>
+      <Button type="submit" className="w-full !mt-6">Crear Cuenta de Empresa</Button>
+    </form>
+  );
+};
 
 export default function RegisterPage() {
   return (
