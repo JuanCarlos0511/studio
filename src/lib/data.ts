@@ -28,6 +28,24 @@ export const companies: Company[] = [
     location: 'Guadalajara, México',
     website: 'https://saludintegral.com',
   },
+  {
+    id: 'comp4',
+    name: 'Quantum Dynamics',
+    logo: 'https://picsum.photos/seed/comp4/100/100',
+    description: 'Pioneros en computación cuántica y IA.',
+    sector: 'Tecnología',
+    location: 'Remoto',
+    website: 'https://quantumdynamics.com',
+  },
+  {
+    id: 'comp5',
+    name: 'EcoSistemas S.A.',
+    logo: 'https://picsum.photos/seed/comp5/100/100',
+    description: 'Desarrollo de tecnologías para la sostenibilidad.',
+    sector: 'Energías Renovables',
+    location: 'Querétaro, México',
+    website: 'https://ecosistemas.com',
+  },
 ];
 
 export const students: Student[] = [
@@ -134,6 +152,50 @@ export const jobs: Job[] = [
     postedAt: '2024-07-15',
     scouter: { name: 'Elena Garza', contact: 'elena.garza@saludintegral.com' }
   },
+  {
+    id: 'job5',
+    company: companies[3],
+    title: 'Científico de Datos (AI/ML)',
+    description: 'Forma parte de nuestro equipo de I+D y trabaja en modelos de machine learning de vanguardia. Experiencia en Python y frameworks como TensorFlow o PyTorch es esencial.',
+    requirements: ['Doctorado o Maestría en Ciencias de la Computación o afín', 'Experiencia con Python, TensorFlow, PyTorch', 'Publicaciones en conferencias relevantes (NeurIPS, ICML)'],
+    contractType: 'Tiempo Completo',
+    salary: { min: 80000, max: 120000, currency: 'MXN' },
+    location: 'Remoto',
+    applyDeadline: '2024-09-30',
+    tags: ['AI', 'Machine Learning', 'Python', 'Investigación'],
+    imageUrl: 'https://picsum.photos/seed/job5/800/400',
+    postedAt: '2024-07-25',
+    scouter: { name: 'Dr. Alan Turing', contact: 'alan.turing@quantumdynamics.com' }
+  },
+  {
+    id: 'job6',
+    company: companies[4],
+    title: 'Ingeniero de Proyectos Sostenibles',
+    description: 'Lidera proyectos de energía renovable, desde la planificación hasta la ejecución. Buscamos a alguien con pasión por el medio ambiente y experiencia en gestión de proyectos.',
+    requirements: ['Ingeniería (Energías Renovables, Ambiental, o afín)', '+4 años de experiencia en gestión de proyectos', 'Conocimiento de normativas ambientales mexicanas', 'Disponibilidad para viajar'],
+    contractType: 'Contrato',
+    salary: { min: 45000, max: 60000, currency: 'MXN' },
+    location: 'Querétaro, México',
+    applyDeadline: '2024-09-01',
+    tags: ['Sostenibilidad', 'Energía Renovable', 'Gestión de Proyectos'],
+    imageUrl: 'https://picsum.photos/seed/job6/800/400',
+    postedAt: '2024-07-19',
+    scouter: { name: 'Valeria Rios', contact: 'valeria.rios@ecosistemas.com' }
+  },
+  {
+    id: 'job7',
+    company: companies[1],
+    title: 'Desarrollador Backend (Node.js)',
+    description: 'Estamos expandiendo nuestro equipo de tecnología financiera. Necesitamos un desarrollador Backend con experiencia sólida en Node.js, microservicios y bases de datos SQL.',
+    requirements: ['+3 años de experiencia con Node.js', 'Experiencia con Express o NestJS', 'Manejo de PostgreSQL o MySQL', 'Conocimientos de Docker'],
+    contractType: 'Tiempo Completo',
+    location: 'Monterrey, México',
+    applyDeadline: '2024-08-20',
+    tags: ['Backend', 'Node.js', 'Fintech', 'SQL'],
+    imageUrl: 'https://picsum.photos/seed/job7/800/400',
+    postedAt: '2024-07-21',
+    scouter: { name: 'Sofía Reyes', contact: 'sofia.reyes@finanzasglobales.com' }
+  }
 ];
 
 export const applications: Application[] = [

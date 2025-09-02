@@ -1,10 +1,14 @@
+'use client';
+
+import { useState } from 'react';
 import { JobCard } from '@/components/JobCard';
 import { JobFilters } from '@/components/JobFilters';
 import { jobs } from '@/lib/data';
 import type { Job } from '@/lib/types';
+import { Card } from '@/components/ui/card';
 
 export default function Home() {
-  const recentJobs: Job[] = jobs;
+  const [filteredJobs, setFilteredJobs] = useState<Job[]>(jobs);
 
   return (
     <div className="bg-background">
@@ -20,15 +24,25 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <aside className="md:col-span-1">
-            <JobFilters />
+            <JobFilters allJobs={jobs} onFilterChange={setFilteredJobs} />
           </aside>
           <main className="md:col-span-3">
-            <h2 className="text-2xl font-headline font-semibold mb-6">Vacantes Recientes</h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {recentJobs.map((job) => (
-                <JobCard key={job.id} job={job} />
-              ))}
-            </div>
+            <h2 className="text-2xl font-headline font-semibold mb-6">
+              {filteredJobs.length > 0 ? 'Resultados' : 'No se encontraron vacantes'} ({filteredJobs.length})
+            </h2>
+            {filteredJobs.length > 0 ? (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {filteredJobs.map((job) => (
+                  <JobCard key={job.id} job={job} />
+                ))}
+              </div>
+            ) : (
+                <Card className="text-center p-10">
+                    <p className="text-muted-foreground">
+                        Intenta ajustar tus criterios de búsqueda.
+                    </p>
+                </Card>
+            )}
           </main>
         </div>
       </div>
