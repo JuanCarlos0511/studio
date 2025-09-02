@@ -19,7 +19,7 @@ import { Check, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { students } from '@/lib/data';
 
-const allTags = [...new Set(students[0].preferredTags.concat(['Python', 'SQL', 'Marketing Digital', 'Diseño Gráfico']))];
+const allTags = [...new Set(students[0].preferredTags.concat(['Python', 'SQL', 'Marketing Digital', 'Diseño Gráfico', 'Node.js', 'Figma', 'UI', 'UX', 'Finanzas']))];
 
 export default function SetupProfilePage() {
   const router = useRouter();
@@ -91,7 +91,7 @@ export default function SetupProfilePage() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="space-y-2">
-              <Label htmlFor="summary">Resumen Profesional</Label>
+              <Label htmlFor="summary">Paso 1: Resumen Profesional</Label>
               <Textarea
                 id="summary"
                 placeholder="Ej: Apasionado desarrollador con interés en crear soluciones innovadoras..."
@@ -103,7 +103,7 @@ export default function SetupProfilePage() {
             </div>
 
             <div className="space-y-2">
-              <Label>Mis Intereses y Habilidades</Label>
+              <Label>Paso 2: Mis Intereses y Habilidades</Label>
               <p className="text-sm text-muted-foreground">Selecciona las etiquetas que mejor te describan (mínimo 3).</p>
               <div className="flex flex-wrap gap-2 pt-2">
                 {allTags.map((tag) => {
@@ -114,7 +114,7 @@ export default function SetupProfilePage() {
                         key={tag}
                         onClick={() => handleTagToggle(tag)}
                         className={cn(
-                            "flex items-center justify-center rounded-full border px-3 py-1 text-sm transition-colors",
+                            "flex items-center justify-center rounded-full border px-3 py-1.5 text-sm transition-colors",
                             isSelected ? "bg-primary text-primary-foreground border-transparent" : "bg-secondary hover:bg-muted"
                         )}
                     >
