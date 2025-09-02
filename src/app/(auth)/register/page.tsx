@@ -23,11 +23,12 @@ const StudentForm = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    localStorage.setItem('userType', 'student');
     toast({
       title: '¡Registro Exitoso!',
-      description: 'Tu cuenta de estudiante ha sido creada. Ahora puedes iniciar sesión.',
+      description: 'Tu cuenta de estudiante ha sido creada. ¡Bienvenida!',
     });
-    router.push('/login');
+    router.push('/profile');
   };
 
   return (
@@ -55,11 +56,12 @@ const CompanyForm = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    localStorage.setItem('userType', 'company');
     toast({
       title: '¡Registro Exitoso!',
-      description: 'La cuenta de tu empresa ha sido creada. Ahora puedes iniciar sesión.',
+      description: 'La cuenta de tu empresa ha sido creada. ¡Bienvenido!',
     });
-    router.push('/login');
+    router.push('/dashboard');
   };
 
   return (
