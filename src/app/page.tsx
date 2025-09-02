@@ -31,7 +31,7 @@ export default function Home() {
               {filteredJobs.length > 0 ? 'Resultados' : 'No se encontraron vacantes'} ({filteredJobs.length})
             </h2>
             {filteredJobs.length > 0 ? (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="flex flex-col gap-6">
                 {filteredJobs.map((job) => (
                   <JobCard key={job.id} job={job} />
                 ))}

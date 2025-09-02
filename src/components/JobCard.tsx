@@ -1,10 +1,9 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import type { Job } from '@/lib/types';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Briefcase, Clock, Calendar } from 'lucide-react';
+import { MapPin, Briefcase, Clock, Bookmark } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
 interface JobCardProps {
@@ -12,41 +11,71 @@ interface JobCardProps {
 }
 
 export function JobCard({ job }: JobCardProps) {
+  const timeSince = (date: string) => {
+    const seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);
+    let interval = seconds / 31536000;
+    if (interval > 1) {
+      return Math.floor(interval) + " años";
+    }
+    interval = seconds / 2592000;
+    if (interval > 1) {
+      return Math.floor(interval) + " meses";
+    }
+    interval = seconds / 86400;
+    if (interval > 1) {
+      return Math.floor(interval) + " días";
+    }
+    interval = seconds / 3600;
+    if (interval > 1) {
+      return Math.floor(interval) + " horas";
+    }
+    interval = seconds / 60;
+    if (interval > 1) {
+      return Math.floor(interval) + " minutos";
+    }
+    return Math.floor(seconds) + " segundos";
+  }
+
   return (
-    <Card className="flex flex-col h-full overflow-hidden transition-shadow duration-300 hover:shadow-xl">
-      <CardHeader className="flex flex-row items-start gap-4 p-4">
-        <Avatar className="w-16 h-16 border rounded-lg">
-          <AvatarImage src={job.company.logo} alt={job.company.name} data-ai-hint="company logo" />
-          <AvatarFallback>{job.company.name.charAt(0)}</AvatarFallback>
-        </Avatar>
-        <div className="flex-grow">
-          <CardTitle className="text-lg font-headline hover:text-primary">
-            <Link href={`/jobs/${job.id}`}>{job.title}</Link>
-          </CardTitle>
-          <p className="text-sm text-muted-foreground">{job.company.name}</p>
+    <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary/30">
+      <CardContent className="p-6">
+        <div className="flex items-start gap-4">
+          <Link href={`/jobs/${job.id}`}>
+            <Avatar className="w-12 h-12 border rounded-md">
+              <AvatarImage src={job.company.logo} alt={job.company.name} data-ai-hint="company logo" />
+              <AvatarFallback>{job.company.name.charAt(0)}</AvatarFallback>
+            </Avatar>
+          </Link>
+          <div className="flex-grow">
+            <h3 className="text-lg font-headline font-semibold hover:text-primary">
+              <Link href={`/jobs/${job.id}`}>{job.title}</Link>
+            </h3>
+            <p className="text-sm text-muted-foreground">{job.company.name}</p>
+             <div className="flex items-center text-xs text-muted-foreground mt-1">
+                <MapPin className="h-3 w-3 mr-1.5 shrink-0" />
+                <span>{job.location}</span>
+                <span className="mx-2">•</span>
+                <Clock className="h-3 w-3 mr-1.5 shrink-0" />
+                <span>Hace {timeSince(job.postedAt)}</span>
+            </div>
+          </div>
         </div>
-      </CardHeader>
-      <CardContent className="flex-grow p-4 pt-0 space-y-3">
-        <div className="flex items-center text-sm text-muted-foreground">
-          <MapPin className="h-4 w-4 mr-2 shrink-0" />
-          <span>{job.location}</span>
-        </div>
-        <div className="flex items-center text-sm text-muted-foreground">
-          <Briefcase className="h-4 w-4 mr-2 shrink-0" />
-          <span>{job.contractType}</span>
-        </div>
-        <div className="flex items-center text-sm text-muted-foreground">
-            <Clock className="h-4 w-4 mr-2 shrink-0" />
-            <span>Publicado: {new Date(job.postedAt).toLocaleDateString('es-MX')}</span>
-        </div>
-        <div className="flex flex-wrap gap-2 pt-2">
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Badge variant="secondary" className="font-normal border-transparent bg-blue-100 text-blue-800">
+            <Briefcase className="h-3 w-3 mr-1.5"/>
+            {job.contractType}
+          </Badge>
           {job.tags.slice(0, 3).map((tag) => (
             <Badge key={tag} variant="secondary" className="font-normal">{tag}</Badge>
           ))}
         </div>
       </CardContent>
-      <CardFooter className="p-4 bg-secondary/50">
-        <Button asChild className="w-full">
+      <CardFooter className="p-4 bg-secondary/30 flex justify-end gap-3">
+         <Button variant="outline" size="sm">
+            <Bookmark className="mr-2 h-4 w-4"/>
+            Guardar
+        </Button>
+        <Button asChild size="sm">
           <Link href={`/jobs/${job.id}`}>Ver Detalles</Link>
         </Button>
       </CardFooter>
