@@ -29,22 +29,17 @@ import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
 const Logo = () => (
-  <Link href="/" className="flex items-center gap-2">
-    <svg
-      width="32"
-      height="32"
-      viewBox="0 0 32 32"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <rect width="32" height="32" rx="8" fill="hsl(var(--primary))" />
-      <path
-        d="M10 12V22H13.2V18.25L16 22H19L15.25 17L19 12H16L13.2 15.75V12H10Z"
-        fill="white"
-      />
-      <path d="M22 12V22H25V12H22Z" fill="white" />
+  <Link href="/" className="flex items-center gap-2" aria-label="Página de inicio de la Facultad de Ingeniería Tampico">
+    <svg width="200" height="40" viewBox="0 0 450 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0H60V25L40 15V40L60 50V60H0V0Z" fill="#D43734"/>
+      <path d="M60 0L80 10V35L60 25V0Z" fill="#5F5F5F"/>
+      <path d="M65 0H85V25L65 15V0Z" fill="#5F5F5F"/>
+      <path d="M65 40L85 50V60H65V40Z" fill="#D43734"/>
+      <path d="M90 0H150V60H90V0Z" fill="#D43734"/>
+      <text x="160" y="42" fontFamily="sans-serif" fontSize="30" fill="#5F5F5F" fontWeight="bold">
+        Facultad de Ingeniería Tampico
+      </text>
     </svg>
-    <span className="text-xl font-bold font-headline text-primary">EnlazaME</span>
   </Link>
 );
 
@@ -89,7 +84,10 @@ const UserMenu = ({ userType }: { userType: 'student' | 'company' }) => {
 
   const handleLogout = () => {
     localStorage.removeItem('userType');
+    localStorage.removeItem('tempStudentProfile');
     router.push('/login');
+    // Force a reload to ensure header state is updated
+    window.location.reload();
   };
 
   const userName = userType === 'student' ? 'Ana Pérez' : 'Reclutador';
@@ -153,7 +151,7 @@ export default function Header() {
     if(isOpen) {
         setIsOpen(false);
     }
-  }, [pathname]);
+  }, [pathname, isOpen]);
 
   if (isMobile === undefined) {
     return <header className="sticky top-0 z-50 w-full border-b bg-card shadow-sm h-16" />;
@@ -172,7 +170,9 @@ export default function Header() {
             </SheetTrigger>
             <SheetContent side="right">
               <div className="flex flex-col gap-6 p-4">
-                <Logo />
+                <div className="flex justify-start">
+                    <Logo />
+                </div>
                 <NavLinks className="flex-col !items-start" userType={loggedInUserType} />
                 <div className="border-t pt-4">
                   {loggedInUserType ? <UserMenu userType={loggedInUserType} /> : <AuthButtons />}

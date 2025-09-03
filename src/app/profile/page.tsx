@@ -24,6 +24,7 @@ import CvEnhancer from '@/components/ai/CvEnhancer';
 import { useEffect, useState } from 'react';
 import type { Student } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { engineeringCareers } from '@/lib/skills';
 
 export default function ProfilePage() {
   const [student, setStudent] = useState<Student | null>(null);
@@ -87,6 +88,9 @@ export default function ProfilePage() {
                 </div>
                 <h1 className="text-2xl font-headline font-bold">{student.name}</h1>
                 <p className="text-muted-foreground">{student.email}</p>
+                 {student.career && engineeringCareers[student.career] &&
+                    <Badge variant="outline" className="mt-2 text-sm">{engineeringCareers[student.career].name}</Badge>
+                 }
                 <Button variant="outline" className="mt-4 w-full">
                     <Pencil className="mr-2 h-4 w-4"/>
                     Editar Perfil
@@ -128,7 +132,7 @@ export default function ProfilePage() {
               <CardContent>
                 <p className="text-muted-foreground">{student.summary}</p>
                 <div className="mt-4">
-                  <h4 className="font-semibold mb-2">Preferencias:</h4>
+                  <h4 className="font-semibold mb-2">Habilidades e Intereses:</h4>
                   <div className="flex flex-wrap gap-2">
                     {student.preferredTags.map((tag) => (
                       <Badge key={tag}>{tag}</Badge>

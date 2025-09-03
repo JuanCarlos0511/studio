@@ -15,11 +15,10 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import type { Student } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
-import { Check, Plus } from 'lucide-react';
+import { Check, Plus, User, FileText as FileTextIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { students } from '@/lib/data';
-
-const allTags = [...new Set(students[0].preferredTags.concat(['Python', 'SQL', 'Marketing Digital', 'Diseño Gráfico', 'Node.js', 'Figma', 'UI', 'UX', 'Finanzas']))];
+import { engineeringCareers } from '@/lib/skills';
 
 export default function SetupProfilePage() {
   const router = useRouter();
@@ -27,16 +26,24 @@ export default function SetupProfilePage() {
   const [summary, setSummary] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [student, setStudent] = useState<Partial<Student> | null>(null);
+  const [availableTags, setAvailableTags] = useState<string[]>([]);
 
   useEffect(() => {
     const tempProfile = localStorage.getItem('tempStudentProfile');
     if (!tempProfile) {
-      // If no temporary profile, redirect to register
       router.push('/register');
     } else {
-      setStudent(JSON.parse(tempProfile));
+      const parsedProfile: Partial<Student> = JSON.parse(tempProfile);
+      setStudent(parsedProfile);
+      if (parsedProfile.career && engineeringCareers[parsedProfile.career]) {
+          setAvailableTags(engineeringCareers[parsedProfile.career].tags);
+      } else {
+          // Fallback or redirect if career is not set
+          toast({ variant: 'destructive', title: 'Error', description: 'No se ha seleccionado una carrera.' });
+          router.push('/register');
+      }
     }
-  }, [router]);
+  }, [router, toast]);
 
   const handleTagToggle = (tag: string) => {
     setSelectedTags((prev) =>
@@ -58,7 +65,7 @@ export default function SetupProfilePage() {
       toast({
         variant: 'destructive',
         title: 'Selecciona tus intereses',
-        description: 'Por favor, elige al menos 3 etiquetas de preferencia.',
+        description: 'Por favor, elige al menos 3 etiquetas de tus habilidades e intereses.',
       });
       return;
     }
@@ -72,7 +79,7 @@ export default function SetupProfilePage() {
     localStorage.setItem('tempStudentProfile', JSON.stringify(updatedProfile));
     toast({
       title: '¡Perfil completado!',
-      description: 'Bienvenido a EnlazaME. ¡Tu futuro empieza ahora!',
+      description: 'Bienvenido a la bolsa de trabajo de la F.I.T. ¡Tu futuro empieza ahora!',
     });
     router.push('/');
   };
@@ -87,42 +94,48 @@ export default function SetupProfilePage() {
           <CardDescription>
             ¡Hola, {student.name}! Ayúdanos a conocerte mejor para recomendarte las mejores oportunidades.
           </CardDescription>
+           <Badge variant="secondary" className="max-w-fit mx-auto mt-2">{student.career ? engineeringCareers[student.career].name : ''}</Badge>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="space-y-2">
-              <Label htmlFor="summary">Paso 1: Resumen Profesional</Label>
-              <Textarea
-                id="summary"
-                placeholder="Ej: Apasionado desarrollador con interés en crear soluciones innovadoras..."
-                value={summary}
-                onChange={(e) => setSummary(e.target.value)}
-                className="min-h-[100px]"
-                required
-              />
+             <div className="space-y-4">
+              <h3 className="font-headline text-lg flex items-center gap-2"><User className="w-5 h-5 text-primary"/>Paso 1: Resumen Profesional</h3>
+              <div className="space-y-2 pl-7">
+                <Label htmlFor="summary">Describe tus objetivos, pasiones y lo que te hace un gran candidato.</Label>
+                <Textarea
+                  id="summary"
+                  placeholder="Ej: Apasionado desarrollador con interés en crear soluciones innovadoras..."
+                  value={summary}
+                  onChange={(e) => setSummary(e.target.value)}
+                  className="min-h-[100px]"
+                  required
+                />
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Label>Paso 2: Mis Intereses y Habilidades</Label>
-              <p className="text-sm text-muted-foreground">Selecciona las etiquetas que mejor te describan (mínimo 3).</p>
-              <div className="flex flex-wrap gap-2 pt-2">
-                {allTags.map((tag) => {
-                  const isSelected = selectedTags.includes(tag);
-                  return (
-                    <button
-                        type="button"
-                        key={tag}
-                        onClick={() => handleTagToggle(tag)}
-                        className={cn(
-                            "flex items-center justify-center rounded-full border px-3 py-1.5 text-sm transition-colors",
-                            isSelected ? "bg-primary text-primary-foreground border-transparent" : "bg-secondary hover:bg-muted"
-                        )}
-                    >
-                       {isSelected ? <Check className="mr-1.5 h-4 w-4"/> : <Plus className="mr-1.5 h-4 w-4"/>}
-                        {tag}
-                    </button>
-                  )
-                })}
+            <div className="space-y-4">
+              <h3 className="font-headline text-lg flex items-center gap-2"><FileTextIcon className="w-5 h-5 text-primary"/>Paso 2: Mis Habilidades e Intereses</h3>
+               <div className="space-y-2 pl-7">
+                <Label>Selecciona las etiquetas que mejor te describan (mínimo 3).</Label>
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {availableTags.map((tag) => {
+                    const isSelected = selectedTags.includes(tag);
+                    return (
+                      <button
+                          type="button"
+                          key={tag}
+                          onClick={() => handleTagToggle(tag)}
+                          className={cn(
+                              "flex items-center justify-center rounded-full border px-3 py-1.5 text-sm transition-colors",
+                              isSelected ? "bg-primary text-primary-foreground border-transparent" : "bg-secondary hover:bg-muted"
+                          )}
+                      >
+                        {isSelected ? <Check className="mr-1.5 h-4 w-4"/> : <Plus className="mr-1.5 h-4 w-4"/>}
+                          {tag}
+                      </button>
+                    )
+                  })}
+                </div>
               </div>
             </div>
 

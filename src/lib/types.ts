@@ -14,6 +14,7 @@ export interface Student {
   avatar: string;
   email: string;
   summary: string;
+  career: string;
   workExperience: {
     title: string;
     company: string;

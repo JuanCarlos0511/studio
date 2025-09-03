@@ -1,4 +1,5 @@
 import type { Company, Student, Job, Application } from './types';
+import { engineeringCareers } from './skills';
 
 export const companies: Company[] = [
   {
@@ -46,6 +47,24 @@ export const companies: Company[] = [
     location: 'Querétaro, México',
     website: 'https://ecosistemas.com',
   },
+  {
+    id: 'comp6',
+    name: 'Constructora Nacional',
+    logo: 'https://picsum.photos/seed/comp6/100/100',
+    description: 'Líder en proyectos de infraestructura y edificación.',
+    sector: 'Construcción',
+    location: 'Tampico, Tamps',
+    website: 'https://constructoranacional.com',
+  },
+  {
+    id: 'comp7',
+    name: 'Logística Total',
+    logo: 'https://picsum.photos/seed/comp7/100/100',
+    description: 'Soluciones integrales de cadena de suministro.',
+    sector: 'Logística',
+    location: 'Altamira, Tamps',
+    website: 'https://logisticatotal.com',
+  }
 ];
 
 export const students: Student[] = [
@@ -54,6 +73,7 @@ export const students: Student[] = [
     name: 'Ana Pérez',
     avatar: 'https://picsum.photos/seed/stu1/100/100',
     email: 'ana.perez@email.com',
+    career: 'ISC',
     summary: 'Desarrolladora de software junior con pasión por el desarrollo frontend y UX/UI.',
     workExperience: [
       {
@@ -65,8 +85,8 @@ export const students: Student[] = [
     ],
     education: [
       {
-        institution: 'Universidad Nacional Autónoma de México',
-        degree: 'Ingeniería en Computación',
+        institution: 'Facultad de Ingeniería de Tampico (UAT)',
+        degree: 'Ingeniería en Sistemas Computacionales',
         duration: '2020 - 2024',
       },
     ],
@@ -79,17 +99,18 @@ export const students: Student[] = [
     name: 'Carlos García',
     avatar: 'https://picsum.photos/seed/stu2/100/100',
     email: 'carlos.garcia@email.com',
-    summary: 'Analista financiero con experiencia en modelado y análisis de datos.',
+    career: 'IIS',
+    summary: 'Estudiante de Ingeniería Industrial enfocado en la optimización de procesos y la cadena de suministro.',
     workExperience: [],
     education: [
       {
-        institution: 'Tecnológico de Monterrey',
-        degree: 'Licenciatura en Finanzas',
+        institution: 'Facultad de Ingeniería de Tampico (UAT)',
+        degree: 'Ingeniería Industrial y de Sistemas',
         duration: '2019 - 2023',
       },
     ],
     cvUrl: '/path/to/cv_carlos_garcia.pdf',
-    preferredTags: ['Finanzas', 'Excel', 'Análisis de Datos'],
+    preferredTags: ['Logística', 'AutoCAD', 'Optimización de Procesos'],
   }
 ];
 
@@ -111,17 +132,17 @@ export const jobs: Job[] = [
   },
   {
     id: 'job2',
-    company: companies[1],
-    title: 'Analista Financiero Junior',
-    description: 'Oportunidad para recién egresados de finanzas. Apoyarás en el análisis de estados financieros, proyecciones y reportes para clientes.',
-    requirements: ['Licenciatura en Finanzas o afín', 'Excelente manejo de Excel', 'Capacidad analítica', 'Proactividad'],
+    company: companies[6],
+    title: 'Analista de Cadena de Suministro',
+    description: 'Oportunidad para egresado de Ing. Industrial para optimizar rutas y procesos en nuestro centro de distribución.',
+    requirements: ['Ingeniería Industrial o afín', 'Excelente manejo de Excel', 'Capacidad analítica', 'Proactividad'],
     contractType: 'Prácticas',
-    location: 'Monterrey, México',
+    location: 'Altamira, Tamps',
     applyDeadline: '2024-08-15',
-    tags: ['Finanzas', 'Análisis', 'Excel', 'Recién Egresado'],
+    tags: ['Logística', 'Cadena de Suministro', 'Excel', 'Recién Egresado'],
     imageUrl: 'https://picsum.photos/seed/job2/800/400',
     postedAt: '2024-07-18',
-    scouter: { name: 'Sofía Reyes', contact: 'sofia.reyes@finanzasglobales.com' }
+    scouter: { name: 'Sofía Reyes', contact: 'sofia.reyes@logisticatotal.com' }
   },
   {
     id: 'job3',
@@ -140,29 +161,29 @@ export const jobs: Job[] = [
   },
   {
     id: 'job4',
-    company: companies[2],
-    title: 'Coordinador de Marketing Digital',
-    description: 'Buscamos un experto en marketing digital para gestionar nuestras campañas en redes sociales, SEO/SEM y email marketing.',
-    requirements: ['+3 años de experiencia en marketing digital', 'Certificación en Google Ads y Analytics', 'Experiencia con CRM', 'Excelentes habilidades de comunicación'],
-    contractType: 'Medio Tiempo',
-    location: 'Remoto',
+    company: companies[5],
+    title: 'Residente de Obra',
+    description: 'Buscamos un Ing. Civil o pasante para supervisar la construcción de un nuevo complejo habitacional.',
+    requirements: ['Ing. Civil (pasante o titulado)', 'Manejo de AutoCAD y Civil 3D', 'Conocimiento de normativas de construcción', 'Disponibilidad de tiempo'],
+    contractType: 'Tiempo Completo',
+    location: 'Tampico, Tamps',
     applyDeadline: '2024-08-25',
-    tags: ['Marketing', 'SEO', 'Redes Sociales', 'Google Ads'],
+    tags: ['Construcción', 'AutoCAD', 'Civil 3D', 'Residente de Obra'],
     imageUrl: 'https://picsum.photos/seed/job4/800/400',
     postedAt: '2024-07-15',
-    scouter: { name: 'Elena Garza', contact: 'elena.garza@saludintegral.com' }
+    scouter: { name: 'Elena Garza', contact: 'elena.garza@constructoranacional.com' }
   },
   {
     id: 'job5',
     company: companies[3],
-    title: 'Científico de Datos (AI/ML)',
-    description: 'Forma parte de nuestro equipo de I+D y trabaja en modelos de machine learning de vanguardia. Experiencia en Python y frameworks como TensorFlow o PyTorch es esencial.',
-    requirements: ['Doctorado o Maestría en Ciencias de la Computación o afín', 'Experiencia con Python, TensorFlow, PyTorch', 'Publicaciones en conferencias relevantes (NeurIPS, ICML)'],
+    title: 'Ingeniero de Datos (Python y SQL)',
+    description: 'Forma parte de nuestro equipo de I+D y trabaja en pipelines de datos y modelos analíticos. Experiencia en Python, SQL y plataformas en la nube es esencial.',
+    requirements: ['Ingeniería en Sistemas, Ciencia de Datos o afín', 'Experiencia con Python, Pandas, SQL', 'Conocimiento de GCP o Azure'],
     contractType: 'Tiempo Completo',
     salary: { min: 80000, max: 120000, currency: 'MXN' },
     location: 'Remoto',
     applyDeadline: '2024-09-30',
-    tags: ['AI', 'Machine Learning', 'Python', 'Investigación'],
+    tags: ['Ciencia de Datos', 'Python', 'SQL', 'GCP', 'ETL'],
     imageUrl: 'https://picsum.photos/seed/job5/800/400',
     postedAt: '2024-07-25',
     scouter: { name: 'Dr. Alan Turing', contact: 'alan.turing@quantumdynamics.com' }
@@ -170,14 +191,14 @@ export const jobs: Job[] = [
   {
     id: 'job6',
     company: companies[4],
-    title: 'Ingeniero de Proyectos Sostenibles',
-    description: 'Lidera proyectos de energía renovable, desde la planificación hasta la ejecución. Buscamos a alguien con pasión por el medio ambiente y experiencia en gestión de proyectos.',
-    requirements: ['Ingeniería (Energías Renovables, Ambiental, o afín)', '+4 años de experiencia en gestión de proyectos', 'Conocimiento de normativas ambientales mexicanas', 'Disponibilidad para viajar'],
-    contractType: 'Contrato',
+    title: 'Ingeniero de Calidad',
+    description: 'Asegurar la calidad de los procesos de manufactura, aplicando metodologías como Six Sigma y Lean Manufacturing.',
+    requirements: ['Ingeniería Industrial', '+2 años de experiencia en calidad', 'Certificación Green Belt (deseable)', 'Conocimiento de ISO 9001'],
+    contractType: 'Tiempo Completo',
     salary: { min: 45000, max: 60000, currency: 'MXN' },
-    location: 'Querétaro, México',
+    location: 'Monterrey, México',
     applyDeadline: '2024-09-01',
-    tags: ['Sostenibilidad', 'Energía Renovable', 'Gestión de Proyectos'],
+    tags: ['Calidad', 'Six Sigma', 'Lean Manufacturing', 'ISO 9001'],
     imageUrl: 'https://picsum.photos/seed/job6/800/400',
     postedAt: '2024-07-19',
     scouter: { name: 'Valeria Rios', contact: 'valeria.rios@ecosistemas.com' }
