@@ -31,7 +31,15 @@ import { usePathname, useRouter } from 'next/navigation';
 
 const Logo = () => (
     <Link href="/" className="flex items-center gap-2" aria-label="Página de inicio de la Facultad de Ingeniería Tampico">
-        <Image src="/logo_fit.png" alt="Logo Facultad de Ingeniería Tampico" className="h-10 w-auto" priority width={167} height={40} />
+        <div className="relative h-10 w-40">
+             <Image 
+                src="/logo_fit.png" 
+                alt="Logo Facultad de Ingeniería Tampico" 
+                fill 
+                className="object-contain"
+                priority 
+            />
+        </div>
     </Link>
 );
 
