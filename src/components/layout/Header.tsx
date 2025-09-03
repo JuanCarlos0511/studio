@@ -30,7 +30,7 @@ import { usePathname, useRouter } from 'next/navigation';
 
 const Logo = () => (
   <Link href="/" className="flex items-center gap-2" aria-label="Página de inicio de la Facultad de Ingeniería Tampico">
-    <svg width="240" height="40" viewBox="0 0 450 60" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+    <svg width="450" height="60" viewBox="0 0 450 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-auto h-8">
       <path d="M0 0H60V25L40 15V40L60 50V60H0V0Z" fill="#D43734"/>
       <path d="M60 0L80 10V35L60 25V0Z" fill="#5F5F5F"/>
       <path d="M65 0H85V25L65 15V0Z" fill="#5F5F5F"/>
