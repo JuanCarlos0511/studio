@@ -30,14 +30,14 @@ import { usePathname, useRouter } from 'next/navigation';
 
 const Logo = () => (
   <Link href="/" className="flex items-center gap-2" aria-label="Página de inicio de la Facultad de Ingeniería Tampico">
-    <svg width="200" height="40" viewBox="0 0 450 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="240" height="40" viewBox="0 0 450 60" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
       <path d="M0 0H60V25L40 15V40L60 50V60H0V0Z" fill="#D43734"/>
       <path d="M60 0L80 10V35L60 25V0Z" fill="#5F5F5F"/>
       <path d="M65 0H85V25L65 15V0Z" fill="#5F5F5F"/>
       <path d="M65 40L85 50V60H65V40Z" fill="#D43734"/>
       <path d="M90 0H150V60H90V0Z" fill="#D43734"/>
       <text x="160" y="42" fontFamily="sans-serif" fontSize="30" fill="#5F5F5F" fontWeight="bold">
-        Facultad de Ingeniería Tampico
+        Facultad de Ingeniería
       </text>
     </svg>
   </Link>
@@ -168,13 +168,13 @@ export default function Header() {
                 <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right">
+            <SheetContent side="right" className="w-[300px]">
               <div className="flex flex-col gap-6 p-4">
-                <div className="flex justify-start">
+                <div className="flex justify-start mb-4">
                     <Logo />
                 </div>
-                <NavLinks className="flex-col !items-start" userType={loggedInUserType} />
-                <div className="border-t pt-4">
+                <NavLinks className="flex-col !items-start gap-4" userType={loggedInUserType} />
+                <div className="border-t pt-4 mt-auto">
                   {loggedInUserType ? <UserMenu userType={loggedInUserType} /> : <AuthButtons />}
                 </div>
               </div>
