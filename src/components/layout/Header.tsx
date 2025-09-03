@@ -2,6 +2,7 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
@@ -30,21 +31,7 @@ import { usePathname, useRouter } from 'next/navigation';
 
 const Logo = () => (
     <Link href="/" className="flex items-center gap-2" aria-label="Página de inicio de la Facultad de Ingeniería Tampico">
-        <svg width="492" height="128" viewBox="0 0 492 128" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-auto h-10">
-            <path d="M0 0H128V32.4375L70.9375 20.625V80.0625L128 98.6875V128H0V0Z" fill="#D43734"/>
-            <path d="M128 0L169.188 19.3125V62.8125L128 45.4375V0Z" fill="#5F5F5F"/>
-            <path d="M70.9375 20.625L128 45.4375L128 0L70.9375 20.625Z" fill="#5F5F5F" fillOpacity="0.5"/>
-            <path d="M70.9375 80.0625L128 98.6875L128 53.0625L70.9375 80.0625Z" fill="#5F5F5F" fillOpacity="0.5"/>
-            <text x="180" y="44" fontFamily="sans-serif" fontSize="36" fill="#5F5F5F" fontWeight="bold">
-                Facultad
-            </text>
-            <text x="180" y="84" fontFamily="sans-serif" fontSize="36" fill="#5F5F5F" fontWeight="bold">
-                de Ingeniería
-            </text>
-            <text x="180" y="124" fontFamily="sans-serif" fontSize="36" fill="#5F5F5F" fontWeight="bold">
-                Tampico
-            </text>
-        </svg>
+        <Image src="/logo_fit.png" alt="Logo Facultad de Ingeniería Tampico" className="h-10 w-auto" priority width={167} height={40} />
     </Link>
 );
 
