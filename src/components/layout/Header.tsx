@@ -29,19 +29,25 @@ import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
 const Logo = () => (
-  <Link href="/" className="flex items-center gap-2" aria-label="Página de inicio de la Facultad de Ingeniería Tampico">
-    <svg width="450" height="60" viewBox="0 0 450 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-auto h-8">
-      <path d="M0 0H60V25L40 15V40L60 50V60H0V0Z" fill="#D43734"/>
-      <path d="M60 0L80 10V35L60 25V0Z" fill="#5F5F5F"/>
-      <path d="M65 0H85V25L65 15V0Z" fill="#5F5F5F"/>
-      <path d="M65 40L85 50V60H65V40Z" fill="#D43734"/>
-      <path d="M90 0H150V60H90V0Z" fill="#D43734"/>
-      <text x="160" y="42" fontFamily="sans-serif" fontSize="30" fill="#5F5F5F" fontWeight="bold">
-        Facultad de Ingeniería
-      </text>
-    </svg>
-  </Link>
+    <Link href="/" className="flex items-center gap-2" aria-label="Página de inicio de la Facultad de Ingeniería Tampico">
+        <svg width="492" height="128" viewBox="0 0 492 128" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-auto h-10">
+            <path d="M0 0H128V32.4375L70.9375 20.625V80.0625L128 98.6875V128H0V0Z" fill="#D43734"/>
+            <path d="M128 0L169.188 19.3125V62.8125L128 45.4375V0Z" fill="#5F5F5F"/>
+            <path d="M70.9375 20.625L128 45.4375L128 0L70.9375 20.625Z" fill="#5F5F5F" fillOpacity="0.5"/>
+            <path d="M70.9375 80.0625L128 98.6875L128 53.0625L70.9375 80.0625Z" fill="#5F5F5F" fillOpacity="0.5"/>
+            <text x="180" y="44" fontFamily="sans-serif" fontSize="36" fill="#5F5F5F" fontWeight="bold">
+                Facultad
+            </text>
+            <text x="180" y="84" fontFamily="sans-serif" fontSize="36" fill="#5F5F5F" fontWeight="bold">
+                de Ingeniería
+            </text>
+            <text x="180" y="124" fontFamily="sans-serif" fontSize="36" fill="#5F5F5F" fontWeight="bold">
+                Tampico
+            </text>
+        </svg>
+    </Link>
 );
+
 
 const NavLinks = ({ className, userType }: { className?: string, userType: 'student' | 'company' | null }) => {
   const baseLinks = [
