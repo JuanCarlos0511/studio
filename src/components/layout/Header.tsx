@@ -13,7 +13,8 @@ import {
   LogOut,
   ChevronDown,
   LayoutDashboard,
-  FileText
+  FileText,
+  Bookmark
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import {
@@ -31,7 +32,7 @@ import { usePathname, useRouter } from 'next/navigation';
 
 const Logo = () => (
     <Link href="/" className="flex items-center gap-2" aria-label="Página de inicio de la Facultad de Ingeniería Tampico">
-        <div className="relative h-10 w-40">
+        <div className="relative h-12 w-48">
              <Image 
                 src="/logo_fit.png" 
                 alt="Logo Facultad de Ingeniería Tampico" 
@@ -50,7 +51,8 @@ const NavLinks = ({ className, userType }: { className?: string, userType: 'stud
   ];
 
   const studentLinks = [
-    { href: '/applications', label: 'Mis Postulaciones', icon: FileText }
+    { href: '/applications', label: 'Mis Postulaciones', icon: FileText },
+    { href: '/saved-jobs', label: 'Guardados', icon: Bookmark }
   ];
 
   const companyLinks = [
@@ -84,11 +86,22 @@ const UserMenu = ({ userType }: { userType: 'student' | 'company' }) => {
   const router = useRouter();
 
   const handleLogout = () => {
+    // Clear only app-specific data
     localStorage.removeItem('userType');
     localStorage.removeItem('tempStudentProfile');
+    localStorage.removeItem('jobs');
+    localStorage.removeItem('applications');
+    localStorage.removeItem('savedJobs');
+    
+    toast({ title: "Sesión Cerrada", description: "Has cerrado sesión exitosamente." });
+    
+    // Use router to navigate to login page
     router.push('/login');
-    // Force a reload to ensure header state is updated
-    window.location.reload();
+    // A small delay to allow toast to show before a potential full reload if needed elsewhere
+    setTimeout(() => {
+        // Soft navigation should be enough, but if state isn't refreshing, a full reload can be a fallback
+        // window.location.reload(); 
+    }, 100);
   };
 
   const userName = userType === 'student' ? 'Ana Pérez' : 'Reclutador';
@@ -198,3 +211,6 @@ export default function Header() {
     </header>
   );
 }
+
+// Add this import at the top
+import { toast } from '@/hooks/use-toast';

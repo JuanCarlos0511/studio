@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import type { Student } from '@/lib/types';
-import { Bookmark } from 'lucide-react';
+import { Bookmark, FileText, Eye } from 'lucide-react';
 import { Skeleton } from '../ui/skeleton';
 
 interface ProfileCardProps {
@@ -58,17 +58,20 @@ export default function ProfileCard({ student }: ProfileCardProps) {
             <p className="text-sm text-muted-foreground px-4 line-clamp-3">{student.summary}</p>
         </div>
         <div className="border-t p-4 space-y-3 text-left">
-            <Link href="/applications" className="group">
-                <div className="flex justify-between items-center text-sm text-muted-foreground">
-                    <p>Mis postulaciones</p>
-                    <p className="font-bold text-primary">2</p>
+            <Link href="/applications" className="group flex justify-between items-center text-sm text-muted-foreground hover:text-primary">
+                <div className="flex items-center gap-2">
+                    <FileText className="w-4 h-4"/>
+                    <span>Mis postulaciones</span>
                 </div>
+                {/* This should be dynamic */}
+                <p className="font-bold text-primary">2</p>
             </Link>
-            <Link href="#" className="group">
-                <div className="flex justify-between items-center text-sm text-muted-foreground">
-                    <p>Vistas de mi perfil</p>
-                    <p className="font-bold text-primary">15</p>
+            <Link href="#" className="group flex justify-between items-center text-sm text-muted-foreground hover:text-primary">
+                 <div className="flex items-center gap-2">
+                    <Eye className="w-4 h-4"/>
+                    <span>Vistas de mi perfil</span>
                 </div>
+                <p className="font-bold text-primary">15</p>
             </Link>
         </div>
         <div className="border-t p-4">

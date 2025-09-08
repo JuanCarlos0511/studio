@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import type { Job } from '@/lib/types';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
@@ -5,12 +7,18 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MapPin, Briefcase, Clock, Bookmark, MoreHorizontal } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { useToast } from '@/hooks/use-toast';
 
 interface JobCardProps {
   job: Job;
+  isSaved: boolean;
+  onToggleSave: (jobId: string) => void;
+  userType: 'student' | 'company' | null;
 }
 
-export function JobCard({ job }: JobCardProps) {
+export function JobCard({ job, isSaved, onToggleSave, userType }: JobCardProps) {
+  const { toast } = useToast();
+  
   const timeSince = (date: string) => {
     const seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);
     let interval = seconds / 31536000;
@@ -34,7 +42,23 @@ export function JobCard({ job }: JobCardProps) {
       return `hace ${Math.floor(interval)} min`;
     }
     return `hace ${Math.floor(seconds)} seg`;
-  }
+  };
+
+  const handleSaveClick = () => {
+    if (userType !== 'student') {
+      toast({
+        variant: 'destructive',
+        title: 'Acción no permitida',
+        description: 'Debes iniciar sesión como estudiante para guardar vacantes.',
+      });
+      return;
+    }
+    onToggleSave(job.id);
+    toast({
+      title: isSaved ? 'Vacante Eliminada' : 'Vacante Guardada',
+      description: isSaved ? 'Has eliminado esta vacante de tus guardados.' : 'Podrás ver esta vacante en tu perfil.',
+    });
+  };
 
   return (
     <Card className="overflow-hidden transition-shadow duration-300 hover:shadow-md">
@@ -75,9 +99,9 @@ export function JobCard({ job }: JobCardProps) {
         </div>
       </CardContent>
       <CardFooter className="p-2 bg-muted/50 flex justify-end gap-2 border-t">
-         <Button variant="ghost" size="sm">
-            <Bookmark className="mr-2 h-4 w-4"/>
-            Guardar
+         <Button variant={isSaved ? "secondary" : "ghost"} size="sm" onClick={handleSaveClick}>
+            <Bookmark className={`mr-2 h-4 w-4 ${isSaved ? 'text-primary fill-current' : ''}`}/>
+            {isSaved ? 'Guardado' : 'Guardar'}
         </Button>
         <Button asChild size="sm">
           <Link href={`/jobs/${job.id}`}>Ver y Postular</Link>

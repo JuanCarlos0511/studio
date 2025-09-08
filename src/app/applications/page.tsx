@@ -1,4 +1,7 @@
-import { applications } from "@/lib/data";
+'use client';
+
+import { applications as initialApplications, students } from "@/lib/data";
+import type { Application } from "@/lib/types";
 import {
   Table,
   TableBody,
@@ -10,9 +13,30 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { FileText } from "lucide-react";
+import { FileText, Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function ApplicationsPage() {
+  const [myApplications, setMyApplications] = useState<Application[]>([]);
+  
+  useEffect(() => {
+    const userType = localStorage.getItem('userType');
+    if (userType !== 'student') return;
+
+    const studentProfile = localStorage.getItem('tempStudentProfile') 
+        ? JSON.parse(localStorage.getItem('tempStudentProfile')!) 
+        : students[0];
+
+    const allApplications = [...initialApplications, ...JSON.parse(localStorage.getItem('applications') || '[]')];
+    const studentApplications = allApplications.filter(app => app.student.id === studentProfile.id);
+    
+    // Sort by date, most recent first
+    studentApplications.sort((a, b) => new Date(b.appliedAt).getTime() - new Date(a.appliedAt).getTime());
+
+    setMyApplications(studentApplications);
+  }, []);
+
   const getStatusVariant = (status: string) => {
     switch (status) {
       case 'Aceptado':
@@ -39,47 +63,56 @@ export default function ApplicationsPage() {
           Aquí puedes ver el historial y estado de todas tus postulaciones.
         </p>
       </header>
-      <Card className="shadow-md">
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[40%]">Puesto</TableHead>
-                <TableHead>Empresa</TableHead>
-                <TableHead>Fecha de Postulación</TableHead>
-                <TableHead className="text-right">Estado</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {applications.map((app) => (
-                <TableRow key={app.id}>
-                  <TableCell className="font-medium">{app.job.title}</TableCell>
-                  <TableCell>{app.job.company.name}</TableCell>
-                  <TableCell>
-                    {new Date(app.appliedAt).toLocaleDateString("es-MX", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Badge variant="outline" className={cn("text-sm", getStatusVariant(app.status))}>
-                      {app.status}
-                    </Badge>
-                  </TableCell>
+      {myApplications.length > 0 ? (
+        <Card className="shadow-md">
+            <CardContent className="p-0">
+            <Table>
+                <TableHeader>
+                <TableRow>
+                    <TableHead className="w-[40%]">Puesto</TableHead>
+                    <TableHead>Empresa</TableHead>
+                    <TableHead>Fecha de Postulación</TableHead>
+                    <TableHead className="text-right">Estado</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-      {applications.length === 0 && (
-        <Card>
-            <CardHeader>
-                <CardTitle>No hay postulaciones</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <p>Aún no te has postulado a ninguna vacante. ¡Explora las ofertas y encuentra tu próximo empleo!</p>
+                </TableHeader>
+                <TableBody>
+                {myApplications.map((app) => (
+                    <TableRow key={app.id}>
+                    <TableCell className="font-medium">
+                        <Link href={`/jobs/${app.job.id}`} className="hover:underline hover:text-primary">
+                            {app.job.title}
+                        </Link>
+                    </TableCell>
+                    <TableCell>{app.job.company.name}</TableCell>
+                    <TableCell>
+                        {new Date(app.appliedAt).toLocaleDateString("es-MX", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                        })}
+                    </TableCell>
+                    <TableCell className="text-right">
+                        <Badge variant="outline" className={cn("text-sm", getStatusVariant(app.status))}>
+                        {app.status}
+                        </Badge>
+                    </TableCell>
+                    </TableRow>
+                ))}
+                </TableBody>
+            </Table>
+            </CardContent>
+        </Card>
+      ) : (
+        <Card className="text-center p-12 border-dashed">
+            <div className="mx-auto bg-secondary text-secondary-foreground rounded-full p-4 w-fit mb-4">
+                <Search className="w-10 h-10" />
+            </div>
+            <CardTitle className="text-xl">No tienes postulaciones</CardTitle>
+            <CardContent className="p-0 pt-2">
+                <p className="text-muted-foreground">Aún no te has postulado a ninguna vacante.</p>
+                 <Button asChild className="mt-4">
+                    <Link href="/">Explorar Empleos</Link>
+                </Button>
             </CardContent>
         </Card>
       )}

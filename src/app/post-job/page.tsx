@@ -32,6 +32,9 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, PlusCircle, Sparkles, Upload } from 'lucide-react';
 import { enhanceJobPosting } from '@/ai/flows/enhance-job-posting';
+import type { Job } from '@/lib/types';
+import { companies } from '@/lib/data';
+import { useRouter } from 'next/navigation';
 
 const jobPostSchema = z.object({
   jobTitle: z.string().min(5, 'El título debe tener al menos 5 caracteres.'),
@@ -49,6 +52,8 @@ const jobPostSchema = z.object({
 export default function PostJobPage() {
   const { toast } = useToast();
   const [isAiLoading, setIsAiLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof jobPostSchema>>({
     resolver: zodResolver(jobPostSchema),
@@ -57,15 +62,45 @@ export default function PostJobPage() {
       jobDescription: '',
       jobRequirements: '',
       tags: '',
+      contractType: 'Tiempo Completo',
     },
   });
 
   const onSubmit = (values: z.infer<typeof jobPostSchema>) => {
-    console.log(values);
-    toast({
-      title: 'Vacante Publicada',
-      description: 'Tu vacante ha sido publicada exitosamente.',
-    });
+    setIsSubmitting(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+        const newJob: Job = {
+            id: `job-${Date.now()}`,
+            company: companies[0], // Assuming the logged in company is the first one
+            title: values.jobTitle,
+            description: values.jobDescription,
+            requirements: values.jobRequirements.split('\n').filter(req => req.trim() !== ''),
+            contractType: values.contractType,
+            salary: values.salaryMin && values.salaryMax ? {
+                min: values.salaryMin,
+                max: values.salaryMax,
+                currency: 'MXN'
+            } : undefined,
+            location: 'Remoto', // Default value
+            applyDeadline: values.applyDeadline,
+            tags: values.tags.split(',').map(tag => tag.trim()),
+            imageUrl: `https://picsum.photos/seed/job-${Date.now()}/800/400`,
+            postedAt: new Date().toISOString(),
+            scouter: { name: 'Reclutador', contact: 'recruiter@innovatech.com'}
+        };
+
+        const existingJobs = JSON.parse(localStorage.getItem('jobs') || '[]');
+        localStorage.setItem('jobs', JSON.stringify([...existingJobs, newJob]));
+
+        setIsSubmitting(false);
+        toast({
+        title: 'Vacante Publicada',
+        description: 'Tu vacante ha sido publicada exitosamente.',
+        });
+        router.push('/dashboard');
+    }, 1000);
   };
   
   const handleEnhanceWithAI = async () => {
@@ -149,7 +184,7 @@ export default function PostJobPage() {
                         name="jobRequirements"
                         render={({ field }) => (
                             <FormItem>
-                            <FormLabel>Requisitos</FormLabel>
+                            <FormLabel>Requisitos (uno por línea)</FormLabel>
                             <FormControl>
                                 <Textarea placeholder="Lista las habilidades, experiencia y educación necesarias." className="min-h-[120px]" {...field} />
                             </FormControl>
@@ -266,7 +301,10 @@ export default function PostJobPage() {
                     </FormControl>
                 </FormItem>
 
-              <Button type="submit" size="lg" className="w-full !mt-8">Publicar Vacante</Button>
+              <Button type="submit" size="lg" className="w-full !mt-8" disabled={isSubmitting}>
+                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}
+                {isSubmitting ? 'Publicando...' : 'Publicar Vacante'}
+              </Button>
             </form>
           </Form>
         </CardContent>

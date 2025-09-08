@@ -3,33 +3,50 @@
 import { useState, useEffect } from 'react';
 import { JobCard } from '@/components/JobCard';
 import { JobFilters } from '@/components/JobFilters';
-import { jobs, students } from '@/lib/data';
+import { jobs as initialJobs, students } from '@/lib/data';
 import type { Job, Student } from '@/lib/types';
 import { Card } from '@/components/ui/card';
 import ProfileCard from '@/components/layout/ProfileCard';
 import SuggestionsCard from '@/components/layout/SuggestionsCard';
 
 export default function Home() {
-  const [filteredJobs, setFilteredJobs] = useState<Job[]>(jobs);
+  const [allJobs, setAllJobs] = useState<Job[]>(initialJobs);
+  const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
   const [userType, setUserType] = useState<'student' | 'company' | null>(null);
   const [student, setStudent] = useState<Student>(students[0]);
+  const [savedJobs, setSavedJobs] = useState<string[]>([]);
 
   useEffect(() => {
+    // Load jobs from localStorage and combine with initial jobs
+    const localJobs = JSON.parse(localStorage.getItem('jobs') || '[]');
+    const combinedJobs = [...initialJobs, ...localJobs];
+    setAllJobs(combinedJobs);
+    setFilteredJobs(combinedJobs); // Initially, show all jobs
+
     const storedUserType = localStorage.getItem('userType') as 'student' | 'company' | null;
     setUserType(storedUserType);
     
     if (storedUserType === 'student') {
       const tempProfile = localStorage.getItem('tempStudentProfile');
       if (tempProfile) {
-        // If there's a profile being created, merge it with a default student structure
         const tempStudent = JSON.parse(tempProfile);
         setStudent(prevStudent => ({...prevStudent, ...tempStudent}));
       } else {
-        // Fallback to the hardcoded student if no temporary one is found
         setStudent(students[0]);
       }
+      const localSavedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
+      setSavedJobs(localSavedJobs);
     }
   }, []);
+
+  const handleToggleSaveJob = (jobId: string) => {
+    const newSavedJobs = savedJobs.includes(jobId) 
+      ? savedJobs.filter(id => id !== jobId)
+      : [...savedJobs, jobId];
+    setSavedJobs(newSavedJobs);
+    localStorage.setItem('savedJobs', JSON.stringify(newSavedJobs));
+  };
+
 
   return (
     <div className="bg-muted/40">
@@ -40,10 +57,10 @@ export default function Home() {
              {userType === 'student' ? (
                 <>
                   <ProfileCard student={student} />
-                  <JobFilters allJobs={jobs} onFilterChange={setFilteredJobs} />
+                  <JobFilters allJobs={allJobs} onFilterChange={setFilteredJobs} />
                 </>
              ) : (
-                <JobFilters allJobs={jobs} onFilterChange={setFilteredJobs} />
+                <JobFilters allJobs={allJobs} onFilterChange={setFilteredJobs} />
              )}
           </aside>
 
@@ -54,7 +71,13 @@ export default function Home() {
             {filteredJobs.length > 0 ? (
               <div className="flex flex-col gap-4">
                 {filteredJobs.map((job) => (
-                  <JobCard key={job.id} job={job} />
+                  <JobCard 
+                    key={job.id} 
+                    job={job}
+                    isSaved={savedJobs.includes(job.id)}
+                    onToggleSave={handleToggleSaveJob}
+                    userType={userType}
+                  />
                 ))}
               </div>
             ) : (

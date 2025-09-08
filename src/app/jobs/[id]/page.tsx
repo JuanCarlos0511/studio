@@ -1,6 +1,8 @@
-import { jobs } from '@/lib/data';
-import type { Job } from '@/lib/types';
-import { notFound } from 'next/navigation';
+'use client';
+
+import { jobs as initialJobs, students, applications as initialApplications } from '@/lib/data';
+import type { Job, Application } from '@/lib/types';
+import { notFound, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -14,14 +16,79 @@ import {
   CheckSquare,
   Building,
   Mail,
+  Loader2,
+  Check,
 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { useEffect, useState } from 'react';
 
 export default function JobDetailPage({ params }: { params: { id: string } }) {
-  const job: Job | undefined = jobs.find((j) => j.id === params.id);
+  const [job, setJob] = useState<Job | null>(null);
+  const [isApplying, setIsApplying] = useState(false);
+  const [hasApplied, setHasApplied] = useState(false);
+  const { toast } = useToast();
+  const router = useRouter();
+
+  useEffect(() => {
+    const allJobs = [...initialJobs, ...JSON.parse(localStorage.getItem('jobs') || '[]')];
+    const foundJob = allJobs.find((j) => j.id === params.id) || null;
+    setJob(foundJob);
+
+    const userType = localStorage.getItem('userType');
+    if (userType !== 'student') return;
+
+    const allApplications = [...initialApplications, ...JSON.parse(localStorage.getItem('applications') || '[]')];
+    const studentProfile = localStorage.getItem('tempStudentProfile') 
+        ? JSON.parse(localStorage.getItem('tempStudentProfile')!) 
+        : students[0];
+
+    if (allApplications.some(app => app.job.id === params.id && app.student.id === studentProfile.id)) {
+        setHasApplied(true);
+    }
+
+  }, [params.id]);
+
 
   if (!job) {
-    notFound();
+    // Optional: show a loading state
+    return <div className="container mx-auto px-4 py-12">Cargando...</div>;
   }
+
+  const handleApply = () => {
+    const userType = localStorage.getItem('userType');
+    if (!userType) {
+        toast({ variant: 'destructive', title: 'No has iniciado sesión', description: 'Por favor, inicia sesión para postularte.'});
+        router.push('/login');
+        return;
+    }
+    if (userType !== 'student') {
+        toast({ variant: 'destructive', title: 'Acción no permitida', description: 'Solo los estudiantes pueden postularse a vacantes.'});
+        return;
+    }
+
+    setIsApplying(true);
+    // Simulate API call
+    setTimeout(() => {
+        const studentProfile = localStorage.getItem('tempStudentProfile') 
+            ? JSON.parse(localStorage.getItem('tempStudentProfile')!) 
+            : students[0];
+        
+        const newApplication: Application = {
+            id: `app-${Date.now()}`,
+            job: job,
+            student: studentProfile,
+            appliedAt: new Date().toISOString(),
+            status: 'En Revisión',
+        };
+
+        const existingApplications = JSON.parse(localStorage.getItem('applications') || '[]');
+        localStorage.setItem('applications', JSON.stringify([...existingApplications, newApplication]));
+        
+        setHasApplied(true);
+        setIsApplying(false);
+        toast({ title: '¡Postulación Exitosa!', description: `Tu postulación para ${job.title} ha sido enviada.`});
+    }, 1000);
+  };
 
   return (
     <div className="bg-background">
@@ -110,12 +177,20 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                   </div>
                 </div>
                 <div className="!mt-6">
-                    <a href={`mailto:${job.scouter.contact}?subject=Postulación para ${job.title}`}>
-                        <Button className="w-full bg-accent hover:bg-accent/90">
+                    <Button 
+                        className="w-full bg-accent hover:bg-accent/90"
+                        onClick={handleApply}
+                        disabled={isApplying || hasApplied}
+                    >
+                        {isApplying ? (
+                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        ) : hasApplied ? (
+                            <Check className="mr-2 h-5 w-5" />
+                        ) : (
                             <CheckSquare className="mr-2 h-5 w-5" />
-                            Postular Ahora
-                        </Button>
-                    </a>
+                        )}
+                        {isApplying ? 'Enviando...' : hasApplied ? 'Ya te postulaste' : 'Postular Ahora'}
+                    </Button>
                 </div>
                 
                 <div className="pt-4 mt-4 border-t">
