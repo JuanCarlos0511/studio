@@ -75,9 +75,11 @@ export default function ProfileCard({ student }: ProfileCardProps) {
             </Link>
         </div>
         <div className="border-t p-4">
-             <Button variant="ghost" className="w-full justify-start text-sm">
-                <Bookmark className="mr-2 h-4 w-4"/>
-                Mis elementos guardados
+             <Button asChild variant="ghost" className="w-full justify-start text-sm">
+                <Link href="/saved-jobs">
+                    <Bookmark className="mr-2 h-4 w-4"/>
+                    Mis elementos guardados
+                </Link>
              </Button>
         </div>
       </CardContent>
