@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import type { Job } from '@/lib/types';
 import { jobs as initialJobs } from '@/lib/data';
 import { JobCard } from '@/components/JobCard';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Bookmark, Search } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
