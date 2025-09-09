@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { FileText, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function ApplicationsPage() {
   const [myApplications, setMyApplications] = useState<Application[]>([]);
